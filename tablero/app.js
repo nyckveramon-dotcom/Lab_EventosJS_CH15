@@ -64,6 +64,10 @@ function pintarFila(){
     const elementoTurno = document.createElement("li");
     elementoTurno.className = "turno";
 
+    if(turno.atendido){
+      elementoTurno.classList.add("turno--atendido")
+    }
+
     const elementoCodigo = document.createElement("span");
     elementoCodigo.className = "turno__codigo";
     elementoCodigo.textContent = turno.codigo;
@@ -83,6 +87,12 @@ function pintarFila(){
     elementoEstado.className = "turno__estado";
     elementoEstado.textContent = "En espera";
 
+    if(turno.atendido === false){
+      elementoEstado.textContent = "En espera"
+    }else{
+      elementoEstado.textContent = "Atendido"
+    }
+
     elementoDatos.appendChild(elementoNombre);
     elementoDatos.appendChild(elementoTramite);
 
@@ -94,6 +104,8 @@ function pintarFila(){
   }
 
   mensajeVacio.hidden = turnos.length > 0;
+
+  actualizarContador()
 
 }
 
@@ -108,7 +120,34 @@ function pintarFila(){
 // Conéctala al botón con addEventListener("click", ...).
 // ============================================================
 
-// Tu código aquí
+function llamarSiguiente(){
+
+  let encontrado = false;
+
+  for(let i = 0; i < turnos.length; i++){
+    if(turnos[i].atendido === false){
+
+      const turnoActual = turnos[i];
+      turnoActual.atendido = true;
+
+      encontrado = true;
+
+      visorNumero.textContent = turnoActual.codigo;
+      visorModulo.textContent = `Pase al ${turnoActual.modulo}`;
+
+      break;
+    }
+
+    if (encontrado === false){
+        visorNumero.textContent = "— — —";
+        visorModulo.textContent = "No hay turnos en espera"
+      }
+  }
+
+  pintarFila();
+}
+
+btnLlamar.addEventListener("click", llamarSiguiente)
 
 // ============================================================
 // Ejercicio 04 · Estados con classList
@@ -128,7 +167,10 @@ function pintarFila(){
 // contador. Llámala al final de pintarFila.
 // ============================================================
 
-// Tu código aquí
+function actualizarContador(){
+  const turnosPendientes = document.querySelectorAll("li:not(.turno--atendido)")
+  contadorFila.textContent = turnosPendientes.length;
+}
 
 // ============================================================
 // Ejercicio 06 · Datos escondidos con dataset y el botón Cancelar
